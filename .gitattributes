@@ -1,0 +1,2 @@
+Dockerfile text eol=lf
+*.tcl text eol=lf
