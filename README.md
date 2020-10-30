@@ -10,5 +10,5 @@ The following to outputs an installed image to `./output/pfsense.qcow2` and pers
 
 ```sh
 docker build --tag pfsense-qemu:latest .
-docker run --rm -it -v "$pwd/cache:/installer-images" -v "$pwd/output:/output" pfsense-qemu:latest
+docker run --rm -it -v "$PWD/cache:/installer-images" -v "$PWD/output:/output" pfsense-qemu:latest
 ```
