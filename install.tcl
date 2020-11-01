@@ -9,7 +9,7 @@ if { ! [file exist $BASE_IMAGE_PATH]} {
   system gunzip -k $::env(INSTALLER_PATH)
 }
 
-set INSTALLER_IMAGE_PATH "isntaller.qcow2"
+set INSTALLER_IMAGE_PATH "installer.qcow2"
 set PFSENSE_IMAGE_PATH "pfsense.qcow2"
 
 system qemu-img create -f qcow2 $INSTALLER_IMAGE_PATH -b $BASE_IMAGE_PATH -F raw
