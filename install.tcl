@@ -12,16 +12,18 @@ if { ! [file exist $BASE_IMAGE_PATH]} {
 set CONFIG_XML_PATH $::env(CONFIG_XML_PATH)
 set OUTPUT_PATH $::env(OUTPUT_PATH)
 
-if { [file exists $OUTPUT_PATH] } {
-  puts stderr "\"$OUTPUT_PATH\" already exists"
-  exit
-}
+if { [string length $BASE_IMAGE_PATH] == 0 } { puts stderr "BASE_IMAGE_PATH not set"; exit }
+if { [string length $OUTPUT_PATH] == 0 } { puts stderr "OUTPUT_PATH not set"; exit }
+
+if { [file exists $OUTPUT_PATH] } { puts stderr "\"$OUTPUT_PATH\" already exists"; exit }
 
 set INSTALLER_IMAGE_PATH "installer.qcow2"
 set TARGET_IMAGE_PATH "target.qcow2"
 set CONF_IMAGE_PATH "conf.img"
 
 if { [file exist $CONFIG_XML_PATH] && [file isfile $CONFIG_XML_PATH] } {
+  puts "Using config.xml \"$CONFIG_XML_PATH\""
+
   set CONF_VOL_PATH "conf.vfat"
   set CONF_VOL_MBYTES [expr [file size $CONFIG_XML_PATH] / 1000000 + 1]
 
@@ -40,7 +42,10 @@ if { [file exist $CONFIG_XML_PATH] && [file isfile $CONFIG_XML_PATH] } {
 system qemu-img create -f qcow2 $INSTALLER_IMAGE_PATH -b $BASE_IMAGE_PATH -F raw
 system qemu-img create -f qcow2 $TARGET_IMAGE_PATH 4G
 
+log_user 0
 set timeout -1
+
+puts "Installing..."
 
 #Start the guest VM
 spawn qemu-system-x86_64 -m 512 -display none -nodefaults -serial stdio \
