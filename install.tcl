@@ -1,16 +1,26 @@
 #!/usr/bin/expect
 
-if { ! [file exist $::env(INSTALLER_PATH)] } {
-  system wget --output-document $::env(INSTALLER_PATH) $::env(INSTALLER_URL)
-}
+if { [llength $argv] == 0 } {
+  if { ! [file exist $::env(INSTALLER_PATH)] } {
+    system wget --output-document $::env(INSTALLER_PATH) $::env(INSTALLER_URL)
+  }
 
-set BASE_IMAGE_PATH [regsub -- ".gz$" $::env(INSTALLER_PATH) ""]
-if { ! [file exist $BASE_IMAGE_PATH]} {
-  system gunzip -k $::env(INSTALLER_PATH)
-}
+  set BASE_IMAGE_PATH [regsub -- ".gz$" $::env(INSTALLER_PATH) ""]
+  if { ! [file exist $BASE_IMAGE_PATH]} {
+    system gunzip -k $::env(INSTALLER_PATH)
+  }
 
-set CONFIG_XML_PATH $::env(CONFIG_XML_PATH)
-set OUTPUT_PATH $::env(OUTPUT_PATH)
+  set CONFIG_XML_PATH $::env(CONFIG_XML_PATH)
+  set OUTPUT_PATH $::env(OUTPUT_PATH)
+} else {
+  set OUTPUT_PATH [lindex $argv 0]
+  set BASE_IMAGE_PATH [lindex $argv 1]
+  if { [llength $argv] > 2 } {
+    set CONFIG_XML_PATH [lindex $argv 2]
+  } else {
+    set CONFIG_XML_PATH ""
+  }
+}
 
 if { [string length $BASE_IMAGE_PATH] == 0 } { puts stderr "BASE_IMAGE_PATH not set"; exit }
 if { [string length $OUTPUT_PATH] == 0 } { puts stderr "OUTPUT_PATH not set"; exit }

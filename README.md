@@ -12,3 +12,9 @@ The following to outputs an installed image to `./output/pfsense.qcow2` and pers
 docker build --tag pfsense-qemu:latest .
 docker run --rm -it -v "$PWD/cache:/installer-images" -v "$PWD/output:/output" -v "$PWD/config.xml:/conf/config.xml" pfsense-qemu:latest
 ```
+
+Alternatively, invoke directly without Docker
+
+```sh
+./install.tcl OUTPUT_FILE BASE_IMAGE [CONFIG_XML]
+```
