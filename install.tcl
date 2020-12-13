@@ -9,10 +9,11 @@ if { ! [file exist $BASE_IMAGE_PATH]} {
   system gunzip -k $::env(INSTALLER_PATH)
 }
 
-set CONFIG_XML_PATH $::env(CONFIG_XML)
+set CONFIG_XML_PATH $::env(CONFIG_XML_PATH)
+set OUTPUT_PATH $::env(OUTPUT_PATH)
 
 set INSTALLER_IMAGE_PATH "installer.qcow2"
-set PFSENSE_IMAGE_PATH "pfsense.qcow2"
+set TARGET_IMAGE_PATH "target.qcow2"
 set CONF_IMAGE_PATH "conf.img"
 
 if { [file exist $CONFIG_XML_PATH] } {
@@ -32,13 +33,13 @@ if { [file exist $CONFIG_XML_PATH] } {
 }
 
 system qemu-img create -f qcow2 $INSTALLER_IMAGE_PATH -b $BASE_IMAGE_PATH -F raw
-system qemu-img create -f qcow2 $PFSENSE_IMAGE_PATH 4G
+system qemu-img create -f qcow2 $TARGET_IMAGE_PATH 4G
 
 set timeout -1
 
 #Start the guest VM
 spawn qemu-system-x86_64 -m 512 -display none -nodefaults -serial stdio \
-  -drive file=$PFSENSE_IMAGE_PATH,format=qcow2,id=drive-target,if=none \
+  -drive file=$TARGET_IMAGE_PATH,format=qcow2,id=drive-target,if=none \
   -device virtio-blk-pci,bus=pci.0,addr=0x2,drive=drive-target \
   -drive file=$INSTALLER_IMAGE_PATH,format=qcow2,id=drive-installer,if=none \
   -device virtio-blk-pci,bus=pci.0,addr=0x3,drive=drive-installer,bootindex=1 \
@@ -85,4 +86,4 @@ expect -re "# $"
 send "poweroff\r"
 expect eof
 
-file rename $PFSENSE_IMAGE_PATH "/output/$PFSENSE_IMAGE_PATH"
+file rename $TARGET_IMAGE_PATH $OUTPUT_PATH
