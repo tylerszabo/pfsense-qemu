@@ -12,11 +12,16 @@ if { ! [file exist $BASE_IMAGE_PATH]} {
 set CONFIG_XML_PATH $::env(CONFIG_XML_PATH)
 set OUTPUT_PATH $::env(OUTPUT_PATH)
 
+if { [file exists $OUTPUT_PATH] } {
+  puts stderr "\"$OUTPUT_PATH\" already exists"
+  exit
+}
+
 set INSTALLER_IMAGE_PATH "installer.qcow2"
 set TARGET_IMAGE_PATH "target.qcow2"
 set CONF_IMAGE_PATH "conf.img"
 
-if { [file exist $CONFIG_XML_PATH] } {
+if { [file exist $CONFIG_XML_PATH] && [file isfile $CONFIG_XML_PATH] } {
   set CONF_VOL_PATH "conf.vfat"
   set CONF_VOL_MBYTES [expr [file size $CONFIG_XML_PATH] / 1000000 + 1]
 
